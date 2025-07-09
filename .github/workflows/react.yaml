@@ -33,13 +33,9 @@ jobs:
 
          
 
-            # Install dependencies and build
-            npm install
-            npm run build
-
             # Deploy to Nginx web root
             sudo rm -rf /var/www/html/*
-            sudo cp -r dist/* /var/www/html/
+            sudo cp -r build/* /var/www/html/
 
             # Restart Nginx
             sudo systemctl restart nginx
