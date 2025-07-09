@@ -24,14 +24,22 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.127.149.160 << 'EOF'
             set -e
-
-            # Pull the latest code
-            git pull origin main
-
  
 
-            # Go to the project directory
-           cd /home/ubuntu/my-app/
+           cd /home/ubuntu
+
+          # If it's not a Git repo or the folder doesn't exist, clone fresh
+          if [ ! -d "my-app/.git" ]; then
+            echo "Cloning fresh copy of the repo..."
+            rm -rf my-app
+            git clone https://github.com/Nikhilrajput-12/react.git my-app
+          else
+            echo "Repo exists — pulling latest changes..."
+            cd my-app
+            git pull origin main
+          fi
+
+          cd my-app
 
         
             # Deploy to Nginx web root
