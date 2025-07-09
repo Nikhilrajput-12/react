@@ -19,12 +19,12 @@ jobs:
 
       - name: Deploy to EC2 and build app
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.204.63.233 << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@3.110.37.157  << 'EOF'
             set -e
 
             cd /home/ubuntu
 
-            # Clone repo only if not exists
+            # Clone repo if not already present
             if [ ! -d "my-app" ]; then
               git clone https://github.com/Nikhilrajput-12/react.git my-app
             fi
@@ -32,24 +32,29 @@ jobs:
             cd my-app
             git pull origin main
 
-            # Install Node.js if not installed
-            if ! command -v node &> /dev/null; then
+            # Install NVM and Node.js 20.19.0
+            if [ ! -d "$HOME/.nvm" ]; then
               curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-              export NVM_DIR="$HOME/.nvm"
-              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-              nvm install 20
-            else
-              echo "Node.js already installed"
             fi
 
-            # Build React App
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+            nvm install 20.19.0
+            nvm use 20.19.0
+
+            echo "Node version: $(node -v)"
+            echo "NPM version: $(npm -v)"
+
+            # Install deps and build
             npm install
             npm run build
 
-            # Deploy built files to NGINX directory
+            # Deploy build to NGINX directory
             sudo rm -rf /var/www/html/*
             sudo cp -r dist/* /var/www/html/
 
-            # Restart NGINX to reflect changes
+            # Restart NGINX
             sudo systemctl restart nginx
           EOF
