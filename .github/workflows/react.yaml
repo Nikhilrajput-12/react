@@ -25,14 +25,15 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.127.149.160 << 'EOF'
             set -e
 
-            # Go to the project directory
-           cd /home/ubuntu/my-app/
-
             # Pull the latest code
             git pull origin main
 
-         
+ 
 
+            # Go to the project directory
+           cd /home/ubuntu/my-app/
+
+        
             # Deploy to Nginx web root
             sudo rm -rf /var/www/html/*
             sudo cp -r build/* /var/www/html/
