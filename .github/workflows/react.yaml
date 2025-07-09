@@ -19,7 +19,7 @@ jobs:
 
       - name: Deploy to EC2 and build app
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@3.110.37.157  << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@3.7.71.225   << 'EOF'
             set -e
 
             cd /home/ubuntu
@@ -48,7 +48,7 @@ jobs:
             npm install
             npm run build
 
-            # Deploy build to NGINX directory
+            # Deploy build to NGINX directory 
             sudo rm -rf /var/www/html/*
             sudo cp -r dist/* /var/www/html/
 
