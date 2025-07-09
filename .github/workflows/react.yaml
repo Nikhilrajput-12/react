@@ -17,7 +17,7 @@ jobs:
           echo "$SSH_KEY" > ssh-key.pem
           chmod 400 ssh-key.pem
 
-      - name: Pull latest code to EC2
+      - name: Pull latestt code to EC2
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.127.149.160 << 'EOF'
             set -e
