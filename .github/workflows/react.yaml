@@ -19,31 +19,30 @@ jobs:
 
       - name: Deploy to EC2 and build app
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@3.7.71.225   << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@3.7.71.225 << 'EOF'
             set -e
 
             cd /home/ubuntu
 
             # Clone repo if not already present
-            
-            git clone https://github.com/Nikhilrajput-12/react.git my-app
-            
+            if [ ! -d "my-app" ]; then
+              git clone https://github.com/Nikhilrajput-12/react.git my-app
+            fi
 
             cd my-app
             git pull origin main
 
-            # Install NVM and Node.js 20.19.0
-            
-              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-            
+            # Install NVM
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+            # Install Node.js and use it
             nvm install 20.19.0
             nvm use 20.19.0
-            
-           export NVM_DIR="$HOME/.nvm"
-           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
- 
+
             # Install deps and build
             npm install
             npm run build
