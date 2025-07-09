@@ -1,0 +1,34 @@
+name: Deploy React App to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup SSH key
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          echo "$SSH_KEY" > ssh-key.pem
+          chmod 400 ssh-key.pem
+
+      - name: Pull latestt code to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.127.149.160 << 'EOF'
+            set -e
+
+            cd /home/ubuntu
+          
+
+            git clone https://github.com/Nikhilrajput-12/react.git my-app
+            cd my-app
+            git pull origin main
+
+            
+           
+          EOF
