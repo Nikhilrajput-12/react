@@ -23,14 +23,12 @@ jobs:
             set -e
 
             cd /home/ubuntu
-            rm -rf my-app
+          
 
             git clone https://github.com/Nikhilrajput-12/react.git my-app
             cd my-app
             git pull origin main
 
             
-            sudo rm -rf /var/www/html/*
-            sudo cp -r dist/* /var/www/html/
-            sudo systemctl restart nginx
+           
           EOF
