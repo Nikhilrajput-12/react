@@ -26,7 +26,7 @@ jobs:
             set -e
 
             # Go to the project directory
-            cd /my-app
+           cd /home/ubuntu/my-app/
 
             # Pull the latest code
             git pull origin main
