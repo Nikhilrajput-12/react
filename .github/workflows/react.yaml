@@ -25,14 +25,14 @@ jobs:
             cd /home/ubuntu
 
             # Clone repo if not already present
-            if [ ! -d "my-app" ]; then
-              git clone https://github.com/Nikhilrajput-12/react.git my-app
-            fi
+           
+             git clone https://github.com/Nikhilrajput-12/react.git my-app
+            
 
             cd my-app
             git pull origin main
 
-            # Install NVM
+           
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
             export NVM_DIR="$HOME/.nvm"
