@@ -1,5 +1,4 @@
-name: deploy react app to ec2
-
+name: Deploy React App to EC2
 
 on:
   push:
@@ -9,35 +8,44 @@ on:
 jobs:
   deploys:
     runs-on: ubuntu-latest
-    
 
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-
-      - name: setup ssh key from secret
+      - name: Setup SSH key from secret
         env:
-          SSH_KEY: ${{secrets.SSH_KEY}}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
           echo "$SSH_KEY" > ssh-key.pem
           chmod 400 ssh-key.pem
 
-
-      - name: deploy via ssh
+      - name: Deploy via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@ 3.111.30.56  << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.127.149.160 << 'EOF'
             set -e
 
-            cd /myapp
+            # Go to the project directory
+            cd /home/ubuntu/myapp
 
+            # Pull the latest code
             git pull origin main
 
+            # If using NVM, load it and install Node (optional)
+            if [ -s "$HOME/.nvm/nvm.sh" ]; then
+              source "$HOME/.nvm/nvm.sh"
+              nvm install 20
+              nvm use 20
+            fi
+
+            # Install dependencies and build
             npm install
             npm run build
 
+            # Deploy to Nginx web root
             sudo rm -rf /var/www/html/*
             sudo cp -r dist/* /var/www/html/
 
+            # Restart Nginx
             sudo systemctl restart nginx
-            EOF
+          EOF
