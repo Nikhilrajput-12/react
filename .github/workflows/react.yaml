@@ -25,17 +25,17 @@ jobs:
             cd /home/ubuntu
 
             # Clone repo if not already present
-            if [ ! -d "my-app" ]; then
-              git clone https://github.com/Nikhilrajput-12/react.git my-app
-            fi
+            
+            git clone https://github.com/Nikhilrajput-12/react.git my-app
+            
 
             cd my-app
             git pull origin main
 
             # Install NVM and Node.js 20.19.0
-            if [ ! -d "$HOME/.nvm" ]; then
+            
               curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-            fi
+            
 
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -44,8 +44,7 @@ jobs:
             nvm install 20.19.0
             nvm use 20.19.0
 
-            echo "Node version: $(node -v)"
-            echo "NPM version: $(npm -v)"
+            
 
             # Install deps and build
             npm install
