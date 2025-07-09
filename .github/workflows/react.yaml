@@ -26,7 +26,7 @@ jobs:
 
             # Clone repo if not already present
            
-             git clone https://github.com/Nikhilrajput-12/react.git my-app
+            git clone https://github.com/Nikhilrajput-12/react.git my-app
             
 
             cd my-app
