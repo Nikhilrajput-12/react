@@ -6,46 +6,21 @@ on:
       - main
 
 jobs:
-  deploys:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup SSH key from secret
+      - name: Setup SSH key
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
           echo "$SSH_KEY" > ssh-key.pem
           chmod 400 ssh-key.pem
 
-      - name: Deploy via SSH
+      - name: Pull latest code to EC2
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.127.149.160 << 'EOF'
             set -e
- 
-
-           cd /home/ubuntu
-
-          # If it's not a Git repo or the folder doesn't exist, clone fresh
-          if [ ! -d "my-app/.git" ]; then
-            echo "Cloning fresh copy of the repo..."
-            rm -rf my-app
-            git clone https://github.com/Nikhilrajput-12/react.git my-app
-          else
-            echo "Repo exists — pulling latest changes..."
-            cd my-app
+            cd /home/ubuntu/my-app
             git pull origin main
-          fi
-
-          cd my-app
-
-        
-            # Deploy to Nginx web root
-            sudo rm -rf /var/www/html/*
-            sudo cp -r build/* /var/www/html/
-
-            # Restart Nginx
-            sudo systemctl restart nginx
           EOF
