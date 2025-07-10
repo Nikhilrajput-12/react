@@ -13,7 +13,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: chek files
+      - name: Check files
         run: ls -a
 
       - name: Setup Node.js
@@ -27,8 +27,8 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      - name: Verify build folder exists
-        run: ls -alh build/
+      - name: Verify dist folder exists
+        run: ls -alh dist/
 
       - name: Setup SSH key
         env:
@@ -39,8 +39,8 @@ jobs:
 
       - name: Create destination directory on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@3.110.218.162 "mkdir -p /home/ubuntu/react-app/build"
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@3.110.218.162 "mkdir -p /home/ubuntu/react-app"
 
-      - name: Copy build folder to EC2
+      - name: Copy dist folder to EC2
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ssh-key.pem" build/ ubuntu@3.110.218.162:/home/ubuntu/react-app/build/
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ssh-key.pem" dist/ ubuntu@3.110.218.162:/home/ubuntu/react-app/
