@@ -33,4 +33,4 @@ jobs:
 
       - name: Copy build folder to EC2
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ssh-key.pem" build/ ubuntu@3.110.218.162 :/home/ubuntu/react-app/build/
+            rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ssh-key.pem" build/ ubuntu@3.110.218.162:/home/ubuntu/react-app/build/
