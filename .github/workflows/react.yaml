@@ -10,6 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # Use the version that matches your dev environment
+
+      - name: Install dependencies
+        run: npm ci  # Faster and more reliable than 'npm install'
+
+      - name: Build React app
+        run: npm run build
+
       - name: Setup SSH key
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
@@ -17,40 +31,6 @@ jobs:
           echo "$SSH_KEY" > ssh-key.pem
           chmod 400 ssh-key.pem
 
-      - name: Deploy to EC2 and build app
+      - name: Copy build folder to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@3.7.71.225 << 'EOF'
-            set -e
-
-            cd /home/ubuntu
-
-            # Clone repo if not already present
-           
-            git clone https://github.com/Nikhilrajput-12/react.git my-app
-            
-
-            cd my-app
-            git pull origin main
-
-           
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-            # Install Node.js and use it
-            nvm install 20.19.0
-            nvm use 20.19.0
-
-            # Install deps and build
-            npm install
-            npm run build
-
-            # Deploy build to NGINX directory 
-            sudo rm -rf /var/www/html/*
-            sudo cp -r dist/* /var/www/html/
-
-            # Restart NGINX
-            sudo systemctl restart nginx
-          EOF
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ssh-key.pem" build/ ubuntu@3.110.218.162 :/home/ubuntu/react-app/build/
